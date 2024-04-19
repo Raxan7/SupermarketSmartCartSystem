@@ -12,6 +12,7 @@ confection==0.1.4
 crispy-bootstrap4==2023.1
 cryptography==42.0.5
 cymem==2.0.8
+dj-database-url==2.1.0
 Django==4.2.1
 django-anymail==10.2
 django-crispy-forms==2.0
@@ -28,6 +29,8 @@ packaging==24.0
 phonenumbers==8.13.23
 Pillow==10.1.0
 preshed==3.0.9
+psycopg2==2.9.9
+psycopg2-binary==2.9.9
 pycparser==2.21
 pydantic==2.7.0
 pydantic_core==2.18.1
