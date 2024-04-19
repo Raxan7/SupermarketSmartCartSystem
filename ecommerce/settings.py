@@ -174,4 +174,6 @@ ANYMAIL = {
     "MAILJET_SECRET_KEY": "8d0385af8e9a9fd76aace2b4692bdd7a",
     # "WEBHOOK_SECRET": str(os.getenv('WEBHOOK_SECRET')),
 }
-DEFAULT_FROM_EMAIL = 'no-reply-akacha@raxan7.com'
+# DEFAULT_FROM_EMAIL = 'no-reply-akacha@raxan7.com'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

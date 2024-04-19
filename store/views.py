@@ -204,7 +204,7 @@ def signup(request):
             otp = random.randint(100000, 999999)
             subject = 'Ecommerce Account Activation - One-Time Password (OTP)'
             message = f'Dear customer,\n\nThank you for signing up on Ecommerce! To activate your account, please use the following One-Time Password (OTP):\n{otp}\nThis OTP is valid for 15 minutes. If you did not request this OTP, please ignore this email.\n\nBest regards,\nThe Ecommerce Team'
-            from_email = 'ecommercepyd@gmail.com'
+            from_email = 'no-reply-akacha@raxan7.com'
             recipient_list = [email]
             send_mail(subject, message, from_email, recipient_list)
             # Store the OTP in the session and redirect to the OTP verification page
@@ -357,33 +357,33 @@ def signin(request):
     else:
         if request.method == 'POST':
             # Verify reCAPTCHA response
-            recaptcha_response = request.POST.get('g-recaptcha-response')
-            recaptcha_data = {
-                'secret': settings.RECAPTCHA_PRIVATE_KEY,
-                'response': recaptcha_response
-            }
-            r = requests.post(
-                'https://www.google.com/recaptcha/api/siteverify', data=recaptcha_data, verify=False)
-            result = r.json()
-            if not result['success']:
-                messages.error(request, "Invalid reCAPTCHA. Please try again.")
-                redirect_url = reverse('Sign In')
+            # recaptcha_response = request.POST.get('g-recaptcha-response')
+            # recaptcha_data = {
+            #     'secret': settings.RECAPTCHA_PRIVATE_KEY,
+            #     'response': recaptcha_response
+            # }
+            # r = requests.post(
+            #     'https://www.google.com/recaptcha/api/siteverify', data=recaptcha_data, verify=False)
+            # result = r.json()
+            # if not result['success']:
+            #     messages.error(request, "Invalid reCAPTCHA. Please try again.")
+            #     redirect_url = reverse('Sign In')
+            # else:
+            # Authenticate the user
+            username = request.POST["email"]
+            password = request.POST["password"]
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                user.last_login = timezone.now()
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(
+                    request, "User is logged in. Redirecting in 3s...")
+                redirect_url = reverse('home')
             else:
-                # Authenticate the user
-                username = request.POST["email"]
-                password = request.POST["password"]
-                user = authenticate(username=username, password=password)
-                if user is not None:
-                    login(request, user)
-                    user.last_login = timezone.now()
-                    user.save()
-                    update_session_auth_hash(request, user)
-                    messages.success(
-                        request, "User is logged in. Redirecting in 3s...")
-                    redirect_url = reverse('home')
-                else:
-                    messages.error(request, "Invalid username or password")
-                    redirect_url = reverse('Sign In')
+                messages.error(request, "Invalid username or password")
+                redirect_url = reverse('Sign In')
     return render(request, 'signin.html', {'redirect_url': redirect_url})
 
 
