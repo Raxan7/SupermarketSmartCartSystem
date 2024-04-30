@@ -338,13 +338,15 @@ def search(request):
 
 
 def index(request):
-    intro_text = f"Welcome {request.user.first_name} {request.user.last_name} This is the home page, here you can view the products as well as their categories"
+    
     context = {
         'categories': Category.objects.all(),
         'products': Product.objects.all(),
-        'intro_text': intro_text,
+        
     }
     if request.user.is_authenticated:
+        intro_text = f"Welcome {request.user.first_name} {request.user.last_name} This is the home page, here you can view the products as well as their categories"
+        context['intro_text'] = intro_text
         context['fname'] = request.user.first_name
         cart = Cart.objects.filter(user=request.user).first()
         if cart:
