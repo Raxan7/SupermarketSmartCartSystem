@@ -342,6 +342,7 @@ def index(request):
     context = {
         'categories': Category.objects.all(),
         'products': Product.objects.all(),
+        'intro_text': "Welcome to Supermarket Smart Cart System, an AI powered system to ease your online shopping journey!"
         
     }
     if request.user.is_authenticated:
