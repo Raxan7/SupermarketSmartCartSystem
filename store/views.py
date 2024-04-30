@@ -342,7 +342,6 @@ def index(request):
     context = {
         'categories': Category.objects.all(),
         'products': Product.objects.all(),
-        'intro_text': "Welcome to Supermarket Smart Cart System, an AI powered system to ease your online shopping journey!"
         
     }
     if request.user.is_authenticated:
@@ -354,6 +353,8 @@ def index(request):
             cart_count = CartItem.objects.filter(
                 cart=cart).aggregate(Sum('quantity'))['quantity__sum']
             context['count'] = cart_count if cart_count else 0
+    else:
+        context['intro_text'] = "Welcome to Supermarket Smart Cart System, an AI powered system to ease your online shopping journey!"
     return render(request, 'home.html', context)
 
 
