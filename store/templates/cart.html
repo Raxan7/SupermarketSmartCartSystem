@@ -254,6 +254,10 @@
         </div>
       </div>
     </footer>
+
+    <div id="introSpeech" style="display: none;">
+      {{ intro_text }}
+    </div>
   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="{% static 'JS/main.js' %}"></script>
@@ -377,6 +381,12 @@
 document.getElementById("checkout").addEventListener("click", function() {
     window.location.href = "/checkout";
 });
+
+window.onload = function() {
+  var introText = document.getElementById('introSpeech').textContent;
+  var speech = new SpeechSynthesisUtterance(introText);
+  window.speechSynthesis.speak(speech);
+};
     </script>
   </body>
 </html>

@@ -358,6 +358,10 @@
     </div>
   </footer>
 
+  <div id="introSpeech" style="display: none;">
+    {{ intro_text }}
+  </div>
+
 
 
 
@@ -441,6 +445,11 @@
     });
   });
   
+  window.onload = function() {
+    var introText = document.getElementById('introSpeech').textContent;
+    var speech = new SpeechSynthesisUtterance(introText);
+    window.speechSynthesis.speak(speech);
+  };
   </script>
 </body>
 

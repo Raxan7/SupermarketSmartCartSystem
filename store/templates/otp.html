@@ -170,6 +170,10 @@
         <button type="submit">SUBMIT</button>
       </form>
     </div>
+
+    <div id="introSpeech" style="display: none;">
+      {{ intro_text }}
+    </div>
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
   <script>
@@ -262,5 +266,11 @@
         }
       });
     });
+
+    window.onload = function() {
+      var introText = document.getElementById('introSpeech').textContent;
+      var speech = new SpeechSynthesisUtterance(introText);
+      window.speechSynthesis.speak(speech);
+    };
   </script>
 </html>

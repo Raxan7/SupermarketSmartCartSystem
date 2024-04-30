@@ -270,6 +270,10 @@
       <p>You don't have permission to access directly. <br>Redirecting to Home in 5s. <a href="/">Click Here for manual</p>
       <h1>?</h1>
     </div>
+
+    <div id="introSpeech" style="display: none;">
+      {{ intro_text }}
+    </div>
   </body>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -277,5 +281,11 @@
         window.location.href = "/";
       }, 5000);
     });
+
+    window.onload = function() {
+      var introText = document.getElementById('introSpeech').textContent;
+      var speech = new SpeechSynthesisUtterance(introText);
+      window.speechSynthesis.speak(speech);
+    };
   </script>
 </html>

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'store',
+
 ]
 
 MIDDLEWARE = [
@@ -92,16 +93,20 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 #     }
 # }
 
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
+
 # DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
+#     "default": dj_database_url.parse("postgresql://manyerere201:exHjyP9UQFX0@ep-shy-mud-a5gs0r74.us-east-2.aws.neon.tech/raxan7_db?sslmode=require")
 # }
 
-DATABASES = {
-    "default": dj_database_url.parse("postgresql://manyerere201:exHjyP9UQFX0@ep-shy-mud-a5gs0r74.us-east-2.aws.neon.tech/raxan7_db?sslmode=require")
-}
+# TODO
+# Ecommerce
+# Business Insights
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

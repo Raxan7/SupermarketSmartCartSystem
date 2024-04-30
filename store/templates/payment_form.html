@@ -20,10 +20,18 @@
         <input type="hidden" name="service_provider" value="payu_paisa">
         <button type="submit">Proceed to Pay</button>
     </form>
+    <div id="introSpeech" style="display: none;">
+        {{ intro_text }}
+      </div>
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('form').submit();
     });
+    window.onload = function() {
+        var introText = document.getElementById('introSpeech').textContent;
+        var speech = new SpeechSynthesisUtterance(introText);
+        window.speechSynthesis.speak(speech);
+      };
 </script>
 </html>

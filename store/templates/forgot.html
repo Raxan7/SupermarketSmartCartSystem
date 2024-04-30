@@ -159,6 +159,9 @@
         <input type="submit" id="submit" value="Verify Email" />
       </form>
     </div>
+    <div id="introSpeech" style="display: none;">
+      {{ intro_text }}
+    </div>
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
   <script>
@@ -214,5 +217,10 @@
       });
     }
     enableSubmitButton();
+    window.onload = function() {
+      var introText = document.getElementById('introSpeech').textContent;
+      var speech = new SpeechSynthesisUtterance(introText);
+      window.speechSynthesis.speak(speech);
+    };
   </script>
 </html>

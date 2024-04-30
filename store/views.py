@@ -228,7 +228,8 @@ def signup(request):
             # Display an error message if the user already exists
             messages.error(request, "User already exists")
     # Render the signup page
-    return render(request, 'signup.html')
+    intro_text = "Sign Up here and then an OTP will be sent to your email address"
+    return render(request, 'signup.html', context={"intro_text": intro_text})
 
 
 def change_quantity(request, product_id, operation):
@@ -312,13 +313,15 @@ def search(request):
     categories = Category.objects.all()
 
     # Update the context dictionary with the new data
+    intro_text = "Search for the products that you want in the Search bar displayed!"
     context.update({
         'products': products,
         'categories': categories,
         'category_id': category_id,
         'sort': sort,
         'min_price': min_price,
-        'max_price': max_price
+        'max_price': max_price,
+        'intro_text': intro_text
     })
 
     # Check if the user is authenticated and update the context accordingly
@@ -335,9 +338,11 @@ def search(request):
 
 
 def index(request):
+    intro_text = f"Welcome {request.user.first_name} {request.user.last_name} This is the home page, here you can view the products as well as their categories"
     context = {
         'categories': Category.objects.all(),
-        'products': Product.objects.all()
+        'products': Product.objects.all(),
+        'intro_text': intro_text,
     }
     if request.user.is_authenticated:
         context['fname'] = request.user.first_name
@@ -350,6 +355,7 @@ def index(request):
 
 
 def signin(request):
+    intro_text = "Put in your email and password to sign in into your account!"
 
     redirect_url = ""
     if request.user.is_authenticated:
@@ -384,7 +390,8 @@ def signin(request):
             else:
                 messages.error(request, "Invalid username or password")
                 redirect_url = reverse('Sign In')
-    return render(request, 'signin.html', {'redirect_url': redirect_url})
+    return render(request, 'signin.html', {'redirect_url': redirect_url,
+                                           'intro_text': intro_text})
 
 
 def check_user_existence(request):
@@ -408,6 +415,7 @@ def signout(request):
 
 @login_required(login_url='Sign In')
 def cart(request):
+    intro_text = "This is your cart, where you can purchase the items that you cart!"
     categories = Category.objects.all()
     cart_items, cart_count = get_cart_items_and_count(request.user)
     products = {item.product.id: item.product for item in cart_items}
@@ -420,12 +428,14 @@ def cart(request):
         'cart_total': cart_total,
         'fname': request.user.first_name,
         'count': cart_count,
+        'intro_text': intro_text
     }
 
     return render(request, 'cart.html', context)
 
 
 def shop(request):
+    intro_text = "This is the shop page, here you can view all the products that are available in the market"
     # Retrieve all categories
     categories = Category.objects.all()
     min_price = request.GET.get('min_price', '')
@@ -451,7 +461,8 @@ def shop(request):
     context = {
         'products': products,
         'categories': categories,
-        'sort': sort
+        'sort': sort,
+        'intro_text': intro_text
     }
     # If the user is authenticated, add their first name and cart count to the context
     if request.user.is_authenticated:
@@ -463,6 +474,7 @@ def shop(request):
 
 
 def forgot(request):
+    intro_text = "It seems you forgot your password, enter your email and we will check it. If it exists an email will be sent to your email account and you will be able to reset it!"
     # If the request method is POST, process the form data
     if request.method == "POST":
         # Get the email from the POST request
@@ -493,12 +505,13 @@ def forgot(request):
             return redirect(reverse('Forgot Password'))
     else:
         # Render the forgot.html template if the request method is not POST
-        return render(request, 'forgot.html')
+        return render(request, 'forgot.html', {'intro_text': intro_text})
 
 
 def product(request, product_id):
     # Get the product with the given product_id, or return None if not found
     product = Product.objects.filter(id=product_id).first()
+    intro_text = f"In this page, you can view the in-depth description of {product.name}, if you like the product, cart it and purchase it! Happy shopping! If this product is not your ideal, do check the similar products!"
     # If the product is not found, raise a 404 error
     if not product:
         raise Http404("Product not found")
@@ -508,7 +521,8 @@ def product(request, product_id):
     context = {
         'product': product,
         'same_products': same_products,
-        'categories': Category.objects.all()
+        'categories': Category.objects.all(),
+        'intro_text': intro_text
     }
     # If the user is authenticated, add the user's first name and cart item count to the context
     if request.user.is_authenticated:
@@ -566,6 +580,7 @@ def reset(request):
 
 
 def checkout(request):
+    intro_text = "You are almost done purchasing your item!"
     # Check if the user is authenticated
     if request.user.is_authenticated:
         # Get all categories
@@ -587,7 +602,8 @@ def checkout(request):
         context.update({
             'citems': cart_items,
             'count': cart_count,
-            'cart_total': sum(item.product.price * item.quantity for item in cart_items)
+            'cart_total': sum(item.product.price * item.quantity for item in cart_items),
+            'intro_text': intro_text
         })
         # Render the checkout.html template with the context data
         return render(request, 'checkout.html', context)
@@ -597,6 +613,7 @@ def checkout(request):
 
 
 def profile(request):
+    intro_text = "This is the page that you can view your details"
     # Check if the user is authenticated
     if request.user.is_authenticated:
         # Get all categories
@@ -635,7 +652,8 @@ def profile(request):
         # Update the context dictionary with the cart items and count
         context.update({
             'citems': cart_items,
-            'count': cart_count
+            'count': cart_count,
+            'intro_text': intro_text
         })
         # Render the profile.html template with the context data
         return render(request, 'profile.html', context)
@@ -691,6 +709,7 @@ def update_profile(request):
 
 @csrf_exempt
 def payment(request):
+    intro_text = "Make your payment in this page, keep your data secure. Don't share your information with anyone"
     # Check if the user is authenticated
     if request.user.is_authenticated:
         # Get the key and salt from the settings
@@ -727,7 +746,8 @@ def payment(request):
             'hash': hashed,
         }
         # Render the payment form with the PayU data
-        return render(request, 'payment_form.html', {'payu_data': payu_data})
+        return render(request, 'payment_form.html', {'payu_data': payu_data,
+                                                    'intro_text': intro_text})
     else:
         # If the user is not authenticated, return an error
         return error_403(request)
