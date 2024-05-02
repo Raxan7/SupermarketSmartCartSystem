@@ -865,3 +865,24 @@ def order_confirmation(request):
 
 def error_403(request):
     return render(request, '403.html', status=403)
+
+
+def trigger(request):
+    return render(request, "speech.html")
+
+import json
+from django.shortcuts import render
+from django.http import JsonResponse
+
+def upload_audio(request):
+    if request.method == 'POST':
+        data = request.POST
+        body_unicode = request.body.decode('utf-8')
+        data = json.loads(body_unicode)
+        transcript = data.get('transcript', '')
+        print(transcript)
+        # Process the transcript as needed
+        return JsonResponse({'message': 'Transcript received: ' + transcript})
+    else:
+        return JsonResponse({'error': 'Only POST requests are allowed.'})
+

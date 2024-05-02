@@ -93,16 +93,16 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
 # DATABASES = {
-#     "default": dj_database_url.parse("postgresql://manyerere201:exHjyP9UQFX0@ep-shy-mud-a5gs0r74.us-east-2.aws.neon.tech/raxan7_db?sslmode=require")
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
 # }
+
+DATABASES = {
+    "default": dj_database_url.parse("postgres://ecommerce_knyv_user:e6FZcwGi9Z5HcqYa8rdrhX4EfhyxSOjk@dpg-copuq9kf7o1s73e7rso0-a.ohio-postgres.render.com/ecommerce_knyv")
+}
 
 # TODO
 # Ecommerce

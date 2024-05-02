@@ -51,6 +51,43 @@
     right: -630px;
     z-index: 9999;
   }
+
+  /* Floating button styles */
+    .float {
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        bottom: 40px;
+        right: 40px;
+        background-color: #007bff;
+        color: #fff;
+        border-radius: 50px;
+        text-align: center;
+        box-shadow: 2px 2px 3px #999;
+        z-index: 9999;
+    }
+
+    .float-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9998;
+    }
+
+    .float-btn {
+        display: block;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        background: #007bff;
+        color: white;
+        text-align: center;
+        border-radius: 50%;
+        font-size: 24px;
+        box-shadow: 2px 2px 3px #999;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
   </style>
 </head>
 
@@ -361,6 +398,89 @@
   <div id="introSpeech" style="display: none;">
     {{ intro_text }}
   </div>
+
+  <!-- Voice capture floating buttons -->
+  <div class="float-container">
+    <div class="float" id="enableRecordBtn">
+        <i class="fas fa-microphone"></i>
+    </div>
+    <div class="float" id="disableRecordBtn" style="display: none;">
+        <i class="fas fa-microphone-slash"></i>
+    </div>
+</div>
+
+<!-- Status display -->
+<p id="status"></p>
+
+<!-- Your existing script imports -->
+
+<!-- Add your script for voice capture functionality -->
+<script>
+    // Function to start recording
+    function enableRecordBtn() {
+        // Disable start button, enable stop button, and set status text
+        document.getElementById('enableRecordBtn').style.display = 'none';
+        document.getElementById('disableRecordBtn').style.display = 'block';
+        document.getElementById('status').textContent = 'Recording...';
+
+        // Add your logic to start recording here
+    }
+
+    // Function to stop recording
+    function disableRecordBtn() {
+        // Enable start button, disable stop button, and set status text
+        document.getElementById('enableRecordBtn').style.display = 'block';
+        document.getElementById('disableRecordBtn').style.display = 'none';
+        document.getElementById('status').textContent = 'Recording stopped.';
+
+        // Add your logic to stop recording here
+    }
+
+    // Event listeners for floating buttons
+    document.getElementById('enableRecordBtn').addEventListener('click', enableRecordBtn);
+    document.getElementById('disableRecordBtn').addEventListener('click', disableRecordBtn);
+
+    // Function to send transcript data
+    function sendTranscript(transcript) {
+        // Get CSRF token
+        const csrftoken = getCookie('csrftoken');
+
+        // Send POST request with CSRF token in headers
+        fetch('/upload_audio/', {
+            method: 'POST',
+            body: JSON.stringify({ transcript: transcript }),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('status').textContent = data;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('status').textContent = 'Error occurred.';
+        });
+    }
+
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Search for the CSRF cookie name
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script> 
 
 
 

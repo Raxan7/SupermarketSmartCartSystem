@@ -32,6 +32,9 @@ urlpatterns = [
     path('order_confirmation/', views.order_confirmation,
          name='order_confirmation'),
     path('payment/<str:operation>/', views.paycheck, name='paycheck'),
+
+    path('upload_audio/', views.upload_audio, name='upload_audio'),
+    path('trigger/', views.trigger, name="trigger"),
 ]
 
 if settings.DEBUG:
