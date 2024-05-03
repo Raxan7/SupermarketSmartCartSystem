@@ -882,6 +882,7 @@ def upload_audio(request):
         transcript = data.get('transcript', '')
         print(transcript)
         # Process the transcript as needed
+        # Function to perform an action
         return JsonResponse({'message': 'Transcript received: ' + transcript})
     else:
         return JsonResponse({'error': 'Only POST requests are allowed.'})

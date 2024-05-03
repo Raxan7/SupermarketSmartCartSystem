@@ -155,6 +155,8 @@
                 </div>
               </li>
               <li><a href="/">Contact</a></li>
+              <button id="recordButton"><strong>Speak</strong></button>
+              <button id="stopButton" disabled><strong>Stop</strong></button>
             </ul>
           </div>
         </div>
@@ -365,5 +367,6 @@ window.onload = function() {
 };
   </script>
 </body>
+<script src="{% static 'JS/speech_recognition.js' %}"></script>
 
 </html>
