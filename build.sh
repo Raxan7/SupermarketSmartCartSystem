@@ -2,8 +2,6 @@
 # exit on error
 set -o errexit
 
-sudo apt-get install portaudio19-dev
-
 python -m pip install --upgrade pip
 
 pip install -r requirements.txt
