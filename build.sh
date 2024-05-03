@@ -2,7 +2,7 @@
 # exit on error
 set -o errexit
 
-apt-get install portaudio19-dev
+sudo apt-get install portaudio19-dev
 
 python -m pip install --upgrade pip
 
