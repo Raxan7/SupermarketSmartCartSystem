@@ -17,6 +17,14 @@ Django==4.2.1
 django-anymail==10.2
 django-crispy-forms==2.0
 environ==1.0
+google-ai-generativelanguage==0.6.2
+google-api-core==2.18.0
+google-api-python-client==2.127.0
+google-auth==2.29.0
+google-auth-httplib2==0.2.0
+google-cloud-texttospeech==2.16.3
+google-generativeai==0.5.2
+googleapis-common-protos==1.63.0
 gunicorn==21.2.0
 idna==3.4
 Jinja2==3.1.3
