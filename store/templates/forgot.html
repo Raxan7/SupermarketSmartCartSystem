@@ -151,7 +151,7 @@
     {% endif %}
     <img class="icon" src="{% static 'logo/black.png' %}" />
     <div class="container">
-      <form action="{% url 'Forgot Password' %}" method="post">
+      <form action="{% url 'store:Forgot Password' %}" method="post">
         {% csrf_token %}
         <h1>Forgot Password</h1>
         <label for="email">Email</label>
@@ -162,6 +162,7 @@
     <div id="introSpeech" style="display: none;">
       {{ intro_text }}
     </div>
+    <p id="status"></p>
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
   <script>
@@ -184,7 +185,7 @@
               .delay(2000)
               .fadeOut(function () {
                 // Redirect to the home page after 2 seconds
-                window.location.href = "{% url 'home' %}";
+                window.location.href = "{% url 'store:home' %}";
               });
           } else {
             $(this).delay(2000).fadeOut();

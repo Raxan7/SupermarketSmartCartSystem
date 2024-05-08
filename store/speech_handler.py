@@ -39,29 +39,3 @@ def process_command_with_ai(transcription):
 user_transcription = "Navigate to the home page"
 intent = process_command_with_ai(user_transcription)
 print("Intent:", intent)
-
-
-# In your Django views.py
-# def execute_action(request, intent):
-#     if intent == "navigate_home":
-#         return redirect('home')
-#     elif intent == "click_button":
-#         # Logic to perform the action of clicking a button
-#         # This could involve updating database records, triggering functionality, etc.
-#         return HttpResponse("Button clicked!")
-#     elif intent == "search":
-#         # Logic to perform a search action
-#         return HttpResponse("Search performed!")
-#     elif intent == "play_music":
-#         # Logic to play music
-#         return HttpResponse("Music played!")
-#     elif intent == "send_message":
-#         # Logic to send a message
-#         return HttpResponse("Message sent!")
-#     else:
-#         return HttpResponse("Unknown action")
-
-# # Example usage
-# # Assuming intent has been identified using AI-based processing
-# response = execute_action(request, intent)
-

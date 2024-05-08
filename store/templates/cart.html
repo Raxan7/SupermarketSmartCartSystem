@@ -283,7 +283,7 @@
                 .delay(2000)
                 .fadeOut(function () {
                   // Redirect to the home page after 2 seconds
-                  window.location.href = "{% url 'home' %}";
+                  window.location.href = "{% url 'store:home' %}";
                 });
             } else {
               $(this).delay(2000).fadeOut();
@@ -388,6 +388,7 @@ window.onload = function() {
   window.speechSynthesis.speak(speech);
 };
     </script>
+    <p id="status"></p>
   </body>
   <script src="{% static 'JS/speech_recognition.js' %}"></script>
 </html>

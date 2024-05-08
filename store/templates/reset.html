@@ -153,7 +153,7 @@
     </div>
     {% endif %}
     <div class="container">
-      <form action="{% url 'Reset Password' %}" method="post">
+      <form action="{% url 'store:Reset Password' %}" method="post">
         {% csrf_token %}
         <h1>Reset Password</h1>
         <label for="password">Password</label>
@@ -178,6 +178,7 @@
     <div id="introSpeech" style="display: none;">
       {{ intro_text }}
     </div>
+    <p id="status"></p>
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
   <script>
@@ -200,7 +201,7 @@
               .delay(2000)
               .fadeOut(function () {
                 // Redirect to the home page after 2 seconds
-                window.location.href = "{% url 'Sign In' %}";
+                window.location.href = "{% url 'store:Sign In' %}";
               });
           } else {
             $(this).delay(2000).fadeOut();

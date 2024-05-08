@@ -32,7 +32,7 @@
                   src="{% static 'logo/text.png' %}"
               /></a></span>
           </div>
-          <form id="search-form" action="{% url 'search' %}" method="get">
+          <form id="search-form" action="{% url 'store:search' %}" method="get">
             <div class="search">
               <input type="text" name="search" id="search" placeholder="Search for products" style="border: none; border-right: 1px solid black" />
               <div class="srhicon" >
@@ -280,7 +280,7 @@
       {{ intro_text }}
     </div>  
   
-  
+    <p id="status"></p>
 
 
 

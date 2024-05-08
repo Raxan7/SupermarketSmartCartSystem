@@ -54,7 +54,7 @@
                   src="{% static 'logo/text.png' %}"
               /></a></span>
           </div>
-          <form id="search-form" action="{% url 'search' %}" method="get">
+          <form id="search-form" action="{% url 'store:search' %}" method="get">
             <div class="search">
               <input type="text" name="search" id="search" placeholder="Search for products" style="border: none; border-right: 1px solid black" />
               <div class="srhicon" >
@@ -163,7 +163,7 @@
             <span class="line"></span>
           </div>
           <div class="filterget">
-            <form id="filter-form" action="{% url 'search' %}">
+            <form id="filter-form" action="{% url 'store:search' %}">
                 <input type="hidden" name="min_price" id="min_price" value="0">
                 <input type="hidden" name="max_price" id="max_price" value="9999999999">
                 <div class="checkbox-item">
@@ -329,6 +329,7 @@
     <div id="introSpeech" style="display: none;">
       {{ intro_text }}
     </div>
+    <p id="status"></p>
 
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -354,7 +355,7 @@
               .delay(2000)
               .fadeOut(function () {
                 // Redirect to the home page after 2 seconds
-                window.location.href = "{% url 'home' %}";
+                window.location.href = "{% url 'store:home' %}";
               });
           } else {
             $(this).delay(2000).fadeOut();

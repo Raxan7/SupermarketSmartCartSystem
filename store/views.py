@@ -11,10 +11,13 @@ from django.db.models import F, FloatField
 import random
 import hashlib
 import time
-import requests
+import re
 from django.utils import timezone
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+import json
+from django.shortcuts import render
+from django.http import JsonResponse
 
 
 def get_cart_items_and_count(user):
@@ -70,7 +73,7 @@ def add_to_cart(request, product_id):
     else:
         # Inform the user that they need to log in and redirect to the 'Sign In' page
         messages.info(request, "You need to login first.")
-        return redirect(reverse('Sign In'))
+        return redirect(reverse('store:Sign In'))
 
 
 @login_required
@@ -117,7 +120,7 @@ def verify_otp(request):
         # If any required session variable is missing, show an error message and redirect to the appropriate page
         messages.error(request, "Session expired, please try again.")
         otp_type = request.session.get('otp_type', 'Sign Up')
-        return redirect(reverse(otp_type))
+        return redirect(reverse("store:" + otp_type))
 
 
 def submit_otp(request):
@@ -148,32 +151,32 @@ def submit_otp(request):
                 del request.session['email']
                 del request.session['otp']
                 del request.session['otp_type']
-                return redirect(reverse('Sign In'))
+                return redirect(reverse('store:Sign In'))
             if request.session['otp_type'] == 'password_reset':
                 # If the OTP is for password reset, set 'password_reset' session variable and redirect to the password reset page
                 request.session['password_reset'] = True
                 messages.info(
                     request, "OTP verified, please reset your password.")
-                return redirect('Reset Password')
+                return redirect('store:Reset Password')
             else:
                 # If the OTP is for account activation, activate the user account and redirect to the login page
                 user.is_active = True
                 user.save()
                 messages.info(
                     request, "Your account has been activated. Please login.")
-                return redirect('Sign In')
+                return redirect('store:Sign In')
         else:
             # If the submitted OTP is invalid, show an error message and redirect to the OTP verification page
             messages.error(request, "Invalid OTP")
-            return redirect(reverse('verify_otp'))
+            return redirect(reverse('store:verify_otp'))
     else:
         # If the required session variables are missing, show an error message and redirect to the appropriate page
         messages.error(request, "Session expired, please try again.")
         otp_type = request.session.get('otp_type', 'Sign Up')
-        return redirect(reverse(otp_type))
+        return redirect(reverse("store:" + otp_type))
 
 
-@user_passes_test(lambda u: u.is_anonymous, login_url='home', redirect_field_name=None)
+@user_passes_test(lambda u: u.is_anonymous, login_url='store:home', redirect_field_name=None)
 def signup(request):
     """
     This function handles user registration and sends an OTP for email verification.
@@ -210,7 +213,7 @@ def signup(request):
             # Store the OTP in the session and redirect to the OTP verification page
             request.session['otp'] = otp
             request.session['otp_type'] = 'Sign Up'
-            return redirect(reverse('verify_otp'))
+            return redirect(reverse('store:verify_otp'))
         elif User.objects.filter(username=username, is_active=False).exists():
             request.session['email'] = email
             # Generate a random OTP and send it via email
@@ -223,7 +226,7 @@ def signup(request):
             # Store the OTP in the session and redirect to the OTP verification page
             request.session['otp'] = otp
             request.session['otp_type'] = 'account_activation'
-            return redirect(reverse('verify_otp'))
+            return redirect(reverse('store:verify_otp'))
         else:
             # Display an error message if the user already exists
             messages.error(request, "User already exists")
@@ -267,7 +270,7 @@ def change_quantity(request, product_id, operation):
             return JsonResponse({"status": "error"})
     else:
         messages.info(request, "You need to login first.")
-        return redirect(reverse('Sign In'))
+        return redirect(reverse('store:Sign In'))
 
 
 def search(request):
@@ -343,7 +346,7 @@ def index(request):
         'categories': Category.objects.all(),
         'products': Product.objects.all(),
         
-    }
+    }    
     if request.user.is_authenticated:
         intro_text = f"Welcome {request.user.first_name} {request.user.last_name} This is the home page, here you can view the products as well as their categories"
         context['intro_text'] = intro_text
@@ -363,22 +366,9 @@ def signin(request):
 
     redirect_url = ""
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('store:home')
     else:
         if request.method == 'POST':
-            # Verify reCAPTCHA response
-            # recaptcha_response = request.POST.get('g-recaptcha-response')
-            # recaptcha_data = {
-            #     'secret': settings.RECAPTCHA_PRIVATE_KEY,
-            #     'response': recaptcha_response
-            # }
-            # r = requests.post(
-            #     'https://www.google.com/recaptcha/api/siteverify', data=recaptcha_data, verify=False)
-            # result = r.json()
-            # if not result['success']:
-            #     messages.error(request, "Invalid reCAPTCHA. Please try again.")
-            #     redirect_url = reverse('Sign In')
-            # else:
             # Authenticate the user
             username = request.POST["email"]
             password = request.POST["password"]
@@ -390,10 +380,10 @@ def signin(request):
                 update_session_auth_hash(request, user)
                 messages.success(
                     request, "User is logged in. Redirecting in 3s...")
-                redirect_url = reverse('home')
+                redirect_url = reverse('store:home')
             else:
                 messages.error(request, "Invalid username or password")
-                redirect_url = reverse('Sign In')
+                redirect_url = reverse('store:Sign In')
     return render(request, 'signin.html', {'redirect_url': redirect_url,
                                            'intro_text': intro_text})
 
@@ -414,10 +404,10 @@ def check_user_existence(request):
 def signout(request):
     if request.user.is_authenticated:
         logout(request)
-    return redirect('home')
+    return redirect('store:home')
 
 
-@login_required(login_url='Sign In')
+@login_required(login_url='store:Sign In')
 def cart(request):
     intro_text = "This is your cart, where you can purchase the items that you cart!"
     categories = Category.objects.all()
@@ -493,7 +483,7 @@ def forgot(request):
             # Prepare the email content
             subject = 'Ecommerce Password Reset: One-Time Password (OTP)'
             message = f'Dear customer,\n\nThank you for using Ecommerce. We have received your request to reset your password. To proceed, please use the One-Time Password (OTP) below:\n\nOTP: {otp}\n\nIf you did not request a password reset, please ignore this email or contact our support team for assistance.\n\nBest regards,\nThe Ecommerce Team'
-            from_email = 'ecommercepyd@gmail.com'
+            from_email = 'no-reply-akacha@raxan7.com'
             recipient_list = [email]
             # Send the email with the OTP
             send_mail(subject, message, from_email, recipient_list)
@@ -502,11 +492,11 @@ def forgot(request):
             request.session['otp'] = otp
             request.session['otp_type'] = 'password_reset'
             # Redirect the user to the OTP verification page
-            return redirect(reverse('verify_otp'))
+            return redirect(reverse('store:verify_otp'))
         else:
             # Display an error message if the email is not found
             messages.error(request, "Email not found")
-            return redirect(reverse('Forgot Password'))
+            return redirect(reverse('store:Forgot Password'))
     else:
         # Render the forgot.html template if the request method is not POST
         return render(request, 'forgot.html', {'intro_text': intro_text})
@@ -568,16 +558,16 @@ def reset(request):
             # Display a message indicating that the password has been reset
             messages.info(
                 request, "Your password has been reset. Please login.")
-            return redirect('Sign In')
+            return redirect('store:Sign In')
         else:
             # Display an error message if the passwords do not match
             messages.error(request, "Passwords do not match.")
-            return redirect(reverse('Reset Password'))
+            return redirect(reverse('store:Reset Password'))
     else:
         if request.method == "POST":
             # Display an error message if the password reset request is invalid
             messages.error(request, "Invalid password reset request.")
-            return redirect(reverse('Forgot Password'))
+            return redirect(reverse('store:Forgot Password'))
         else:
             # Render the reset.html template if the request method is not POST
             return render(request, 'reset.html')
@@ -699,10 +689,10 @@ def update_profile(request):
             if request.POST.get('password') != "********":
                 messages.info(
                     request, "Your profile has been updated. Login Again to see changes.")
-                return redirect('Sign In')
+                return redirect('store:Sign In')
             else:
                 messages.info(request, "Your profile has been updated.")
-                return redirect('Profile')
+                return redirect('store:Profile')
         else:
             # Return a JSON response indicating an error if the request method is not POST
             return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
@@ -854,7 +844,7 @@ def order_confirmation(request):
             return HttpResponse(status=200)
         elif payment_method == 'PayU':
             request.session['amount'] = str(request.POST.get('amount'))+".00"
-            # return redirect(reverse('Payment'))
+            # return redirect(reverse('store:Payment'))
             return HttpResponse(status=302)
         else:
             response_data = {
@@ -870,20 +860,22 @@ def error_403(request):
 def trigger(request):
     return render(request, "speech.html")
 
-import json
-from django.shortcuts import render
-from django.http import JsonResponse
 
+from .speech_commander import *
+from django.urls import resolve
+
+# Updated upload_audio view function
 def upload_audio(request):
     if request.method == 'POST':
-        data = request.POST
-        body_unicode = request.body.decode('utf-8')
-        data = json.loads(body_unicode)
+        data = json.loads(request.body.decode('utf-8'))
         transcript = data.get('transcript', '')
-        print(transcript)
-        # Process the transcript as needed
-        # Function to perform an action
-        return JsonResponse({'message': 'Transcript received: ' + transcript})
+
+        redirect_path = Call(transcript)
+        redirect_path = str(redirect_path)
+        if "'" in redirect_path:
+            redirect_path = re.sub(r"''{2,}", "'", redirect_path)
+        
+        return JsonResponse({'redirect_url': reverse("store:" + redirect_path)})
     else:
         return JsonResponse({'error': 'Only POST requests are allowed.'})
 

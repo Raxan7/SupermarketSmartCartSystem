@@ -7,7 +7,8 @@ let recognition; // Declare recognition variable outside event listeners
 recordButton.addEventListener('click', () => {
     recordButton.disabled = true;
     stopButton.disabled = false; // Enable stop button when recording starts
-    statusText.textContent = 'Recording...';
+    // statusText.textContent = 'Recording...';
+    confirm("Confirm to start recording")
 
     recognition = new webkitSpeechRecognition();
     recognition.lang = 'en-US';
@@ -15,6 +16,7 @@ recordButton.addEventListener('click', () => {
 
     recognition.onresult = function(event) {
         const transcript = event.results[0][0].transcript;
+        alert(transcript);
         statusText.textContent = 'Sending...';
         sendTranscript(transcript);
     };
@@ -22,6 +24,7 @@ recordButton.addEventListener('click', () => {
     recognition.onerror = function(event) {
         console.error('Speech recognition error:', event.error);
         statusText.textContent = 'Speech recognition error.';
+        alert("Speech recognition error.");
         enableButtons();
     };
 });
@@ -32,6 +35,18 @@ stopButton.addEventListener('click', () => {
     statusText.textContent = 'Recording stopped.';
 });
 
+
+function sendData(data){
+    const csrftoken = getCookie("csrftoken")
+    fetch('/upload_audio/', {
+        method: 'POST',
+        body: JSON.stringify({ data: data }),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        }
+    })
+}
 // Function to send transcript data
 function sendTranscript(transcript) {
     // Get CSRF token
@@ -46,10 +61,13 @@ function sendTranscript(transcript) {
             'X-CSRFToken': csrftoken
         }
     })
-    .then(response => response.text())
+    .then(response => response.json())
     .then(data => {
+        const destination = data.redirect_url;
         statusText.textContent = data;
+        sendData(data);
         enableButtons();
+        window.location.href = destination;
     })
     .catch(error => {
         console.error('Error:', error);

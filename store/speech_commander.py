@@ -1,5 +1,6 @@
 import markdown
 import google.generativeai as genai
+from django.shortcuts import redirect
 
 
 GOOGLE_API_KEY = 'AIzaSyAX8YiDkmNyeLhCnGZOZ4Uq_2gJyXvatNs'
@@ -7,52 +8,23 @@ genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
 
 # List of commands
-commands = [
-    "home", "main page", "start",
-    "cart", "view cart",
-    "shop", "go shopping",
-    "checkout", "proceed to checkout",
-    "profile", "user profile",
-    "payment", "make payment",
-    "sign in", "login",
-    "sign up", "register",
-    "forgot password", "reset password",
-    "logout", "sign out",
-    "search", "search for products",
-    "verify OTP", "submit OTP",
-    "product details", "view product",
-    "add to cart", "add item to cart",
-    "remove from cart", "delete item from cart",
-    "change quantity", "update quantity",
-    "order confirmation", "confirm order",
-    "payment status", "check payment status",
-    "upload audio", "record audio",
-    "trigger", "invoke action",
-    # URLs with arguments
-    "product 1", "view product 1",
-    "product 2", "view product 2",
-    "product 3", "view product 3",
-    # Add more commands for other product IDs if needed
-]
-
+commands = ["home", "Cart", "Shop", "Checkout", "Profile", "Payment", "Sign In", "Sign Up", "Forgot Password", 
+            "Reset Password", "SignOut", "check_user_exists", "update_profile", "search", "verify_otp", 
+             "submit_otp", "product", "add_to_cart", "remove_from_cart", "change_quantity", "order_confirmation", 
+             "paycheck", "upload_audio", "trigger"]
 
 
 def Call(speech):
 
     # Prompt for Gemini API
-    prompt_for_gemini_api = f"Please provide the command from this list {commands} corresponding to the following speech: {speech}"
+    prompt_for_gemini_api = f"Please provide the command from this list {commands} corresponding to the following speech: {speech}. The response should be in the format specified by the keys in the commands list"
     
     # Generate response using Gemini API
     response = model.generate_content(prompt_for_gemini_api)
-    # response = model.generate_content(prompt)
-    # print(markdown.markdown(response.text))
-    parsed_response = markdown.markdown(response.text)
-    return parsed_response
+    # parsed_response = markdown.markdown(response.text)
+    value = response.text
+    return value
 
-
-
-
-print(Call("Go to the shop page"))
 
 
 

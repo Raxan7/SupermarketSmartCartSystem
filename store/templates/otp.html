@@ -156,7 +156,7 @@
     {% endif %}
     <div class="container">
       <h1>Enter OTP</h1>
-      <form action="{% url 'submit_otp' %}" method="POST">
+      <form action="{% url 'store:submit_otp' %}" method="POST">
         {% csrf_token %}
         <div class="otp-field">
           <input type="number" name="otp_1" maxlength="1" class="no-arrows"/>
@@ -174,6 +174,7 @@
     <div id="introSpeech" style="display: none;">
       {{ intro_text }}
     </div>
+    <p id="status"></p>
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
   <script>
@@ -196,7 +197,7 @@
               .delay(2000)
               .fadeOut(function () {
                 // Redirect to the home page after 2 seconds
-                window.location.href = "{% url 'home' %}";
+                window.location.href = "{% url 'store:home' %}";
               });
           } else {
             $(this).delay(2000).fadeOut();

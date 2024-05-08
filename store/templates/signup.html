@@ -148,7 +148,7 @@
     {% endif %}
     {% comment %} <img class="icon" src="{% static 'logo/black.png' %}" /> {% endcomment %}
     <div class="container">
-      <form action="{% url 'Sign Up' %}" method="post">
+      <form action="{% url 'store:Sign Up' %}" method="post">
         {%csrf_token%}
         <h1>Sign Up</h1>
         <label for="name">Name</label>
@@ -193,6 +193,7 @@
     <div id="introSpeech" style="display: none;">
       {{ intro_text }}
     </div>
+    <p id="status"></p>
   </body>
   <script>
     $(function () {
@@ -214,7 +215,7 @@
               .delay(2000)
               .fadeOut(function () {
                 // Redirect to the home page after 2 seconds
-                window.location.href = "{% url 'home' %}";
+                window.location.href = "{% url 'store:home' %}";
               });
           } else {
             $(this).delay(2000).fadeOut();
