@@ -231,7 +231,8 @@ def signup(request):
             # Display an error message if the user already exists
             messages.error(request, "User already exists")
     # Render the signup page
-    intro_text = "Sign Up here and then an OTP will be sent to your email address"
+    # intro_text = "Sign Up here and then an OTP will be sent to your email address"
+    intro_text = introText("Sign Up Page")
     return render(request, 'signup.html', context={"intro_text": intro_text})
 
 
@@ -316,7 +317,8 @@ def search(request):
     categories = Category.objects.all()
 
     # Update the context dictionary with the new data
-    intro_text = "Search for the products that you want in the Search bar displayed!"
+    # intro_text = "Search for the products that you want in the Search bar displayed!"
+    intro_text = introText("Search Products Page")
     context.update({
         'products': products,
         'categories': categories,
@@ -348,7 +350,8 @@ def index(request):
         
     }    
     if request.user.is_authenticated:
-        intro_text = f"Welcome {request.user.first_name} {request.user.last_name} This is the home page, here you can view the products as well as their categories"
+        # intro_text = f"Welcome {request.user.first_name} {request.user.last_name} This is the home page, here you can view the products as well as their categories"
+        intro_text = introText(f"Home page logged in user with names {request.user.first_name} {request.user.last_name}")
         context['intro_text'] = intro_text
         context['fname'] = request.user.first_name
         cart = Cart.objects.filter(user=request.user).first()
@@ -357,12 +360,14 @@ def index(request):
                 cart=cart).aggregate(Sum('quantity'))['quantity__sum']
             context['count'] = cart_count if cart_count else 0
     else:
-        context['intro_text'] = "Welcome to Supermarket Smart Cart System, an AI powered system to ease your online shopping journey!"
+        # context['intro_text'] = "Welcome to Supermarket Smart Cart System, an AI powered system to ease your online shopping journey!"
+        context['intro_text'] = introText("Home page anonymous user!")
     return render(request, 'home.html', context)
 
 
 def signin(request):
-    intro_text = "Put in your email and password to sign in into your account!"
+    # intro_text = "Put in your email and password to sign in into your account!"
+    intro_text = introText("Sign in Page with email and password fields")
 
     redirect_url = ""
     if request.user.is_authenticated:
@@ -409,7 +414,8 @@ def signout(request):
 
 @login_required(login_url='store:Sign In')
 def cart(request):
-    intro_text = "This is your cart, where you can purchase the items that you cart!"
+    # intro_text = "This is your cart, where you can purchase the items that you cart!"
+    intro_text = introText("Cart page")
     categories = Category.objects.all()
     cart_items, cart_count = get_cart_items_and_count(request.user)
     products = {item.product.id: item.product for item in cart_items}
@@ -429,7 +435,9 @@ def cart(request):
 
 
 def shop(request):
-    intro_text = "This is the shop page, here you can view all the products that are available in the market"
+    # intro_text = "This is the shop page, here you can view all the products that are available in the market"
+    intro_text = introText("Shop Page")
+    print(intro_text)
     # Retrieve all categories
     categories = Category.objects.all()
     min_price = request.GET.get('min_price', '')
@@ -468,7 +476,8 @@ def shop(request):
 
 
 def forgot(request):
-    intro_text = "It seems you forgot your password, enter your email and we will check it. If it exists an email will be sent to your email account and you will be able to reset it!"
+    # intro_text = "It seems you forgot your password, enter your email and we will check it. If it exists an email will be sent to your email account and you will be able to reset it!"
+    intro_text = introText("Forgot Password Page")
     # If the request method is POST, process the form data
     if request.method == "POST":
         # Get the email from the POST request
@@ -505,7 +514,8 @@ def forgot(request):
 def product(request, product_id):
     # Get the product with the given product_id, or return None if not found
     product = Product.objects.filter(id=product_id).first()
-    intro_text = f"In this page, you can view the in-depth description of {product.name}, if you like the product, cart it and purchase it! Happy shopping! If this product is not your ideal, do check the similar products!"
+    # intro_text = f"In this page, you can view the in-depth description of {product.name}, if you like the product, cart it and purchase it! Happy shopping! If this product is not your ideal, do check the similar products!"
+    intro_text = introText(f"Product detail page for {product.name} product")
     # If the product is not found, raise a 404 error
     if not product:
         raise Http404("Product not found")
@@ -574,7 +584,8 @@ def reset(request):
 
 
 def checkout(request):
-    intro_text = "You are almost done purchasing your item!"
+    # intro_text = "You are almost done purchasing your item!"
+    intro_text = introText("Check Out Page")
     # Check if the user is authenticated
     if request.user.is_authenticated:
         # Get all categories
@@ -607,7 +618,8 @@ def checkout(request):
 
 
 def profile(request):
-    intro_text = "This is the page that you can view your details"
+    # intro_text = "This is the page that you can view your details"
+    intro_text = introText("Profile Page")
     # Check if the user is authenticated
     if request.user.is_authenticated:
         # Get all categories
@@ -703,7 +715,8 @@ def update_profile(request):
 
 @csrf_exempt
 def payment(request):
-    intro_text = "Make your payment in this page, keep your data secure. Don't share your information with anyone"
+    # intro_text = "Make your payment in this page, keep your data secure. Don't share your information with anyone"
+    intro_text = introText("Payment Page")
     # Check if the user is authenticated
     if request.user.is_authenticated:
         # Get the key and salt from the settings

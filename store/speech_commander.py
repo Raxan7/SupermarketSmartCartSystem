@@ -26,9 +26,10 @@ def Call(speech):
     return value
 
 
-
-
-
-
-
-
+def introText(page_name):
+    prompt_for_gemini_api = f"Provide for me a short but brief welcome message for the {page_name} in my Ecommerce website"
+    # Generate response using Gemini API
+    response = model.generate_content(prompt_for_gemini_api)
+    # parsed_response = markdown.markdown(response.text)
+    value = response.text
+    return value
