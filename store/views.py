@@ -888,7 +888,10 @@ def upload_audio(request):
         if "'" in redirect_path:
             redirect_path = re.sub(r"''{2,}", "'", redirect_path)
         
-        return JsonResponse({'redirect_url': reverse("store:" + redirect_path)})
+        if (isinstance(redirect_path, tuple)):
+            return JsonResponse({'redirect_url': reverse("store:" + redirect_path[0], kwargs={"product_id": redirect_path[1]})})
+        else:
+            return JsonResponse({'redirect_url': reverse("store:" + redirect_path)})
     else:
         return JsonResponse({'error': 'Only POST requests are allowed.'})
 

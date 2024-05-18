@@ -20,7 +20,7 @@ def separate_product(input_str):
     else:
         return None
 
-def Call(speech: str) -> str:
+def Call(speech: str):
     # Prompt for Gemini API
     prompt_for_gemini_api = f"Please provide only one the command from this list {list(url_paths)} corresponding to the following speech: {speech}. The response should be in the format specified by the keys in the commands list, if you there is a number in words form, change it into numeric and append it to the command, don't return as a string"
     
@@ -34,23 +34,13 @@ def Call(speech: str) -> str:
     print(result)
     try:
         if result:
-            product, number = result
-            print("Product:", product)
+            product_path, number = result
+            print("Product:", product_path)
             print("Number:", number)
+            return product_path, number
         elif (result==None):
             return value
-        else:
-            print("No match found")
         
-        # Extract the command from the Gemini response
-        command = value.strip().lower()
-
-        # Check if the command exists in the URL paths
-        if command in url_paths:
-            url_path = url_paths[command]
-            return url_path
-        else:
-            return "Command not recognized."
     except TypeError as e:
         print(e)
         return value
