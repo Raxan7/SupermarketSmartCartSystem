@@ -1,30 +1,60 @@
 import markdown
+import re
 import google.generativeai as genai
-from django.shortcuts import redirect
 
 
 GOOGLE_API_KEY = 'AIzaSyAX8YiDkmNyeLhCnGZOZ4Uq_2gJyXvatNs'
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
 
-# List of commands
-commands = ["home", "Cart", "Shop", "Checkout", "Profile", "Payment", "Sign In", "Sign Up", "Forgot Password", 
+url_paths = ["home", "Cart", "Shop", "Checkout", "Profile", "Payment", "Sign In", "Sign Up", "Forgot Password", 
             "Reset Password", "SignOut", "check_user_exists", "update_profile", "search", "verify_otp", 
              "submit_otp", "product", "add_to_cart", "remove_from_cart", "change_quantity", "order_confirmation", 
              "paycheck", "upload_audio", "trigger"]
 
 
-def Call(speech):
+def separate_product(input_str):
+    match = re.match(r"([a-zA-Z_ ]+)([0-9]+)", input_str)
+    if match:
+        return match.groups()
+    else:
+        return None
 
+def Call(speech: str) -> str:
     # Prompt for Gemini API
-    prompt_for_gemini_api = f"Please provide the command from this list {commands} corresponding to the following speech: {speech}. The response should be in the format specified by the keys in the commands list"
+    prompt_for_gemini_api = f"Please provide only one the command from this list {list(url_paths)} corresponding to the following speech: {speech}. The response should be in the format specified by the keys in the commands list, if you there is a number in words form, change it into numeric and append it to the command, don't return as a string"
     
     # Generate response using Gemini API
     response = model.generate_content(prompt_for_gemini_api)
-    # parsed_response = markdown.markdown(response.text)
     value = response.text
-    return value
+    print(value)
 
+    # input_str = "product21"
+    result = separate_product(value)
+    print(result)
+    try:
+        if result:
+            product, number = result
+            print("Product:", product)
+            print("Number:", number)
+        elif (result==None):
+            return value
+        else:
+            print("No match found")
+        
+        # Extract the command from the Gemini response
+        command = value.strip().lower()
+
+        # Check if the command exists in the URL paths
+        if command in url_paths:
+            url_path = url_paths[command]
+            return url_path
+        else:
+            return "Command not recognized."
+    except TypeError as e:
+        print(e)
+        return value
+    
 
 def introText(page_name):
     prompt_for_gemini_api = f"Provide for me a short but brief welcome message for the {page_name} in my Ecommerce website"
@@ -33,3 +63,21 @@ def introText(page_name):
     # parsed_response = markdown.markdown(response.text)
     value = response.text
     return value
+
+
+# Example usage
+# speech = "I want to purchase product twenty one"
+# print(Call(speech))
+# speech = "Nataka kununua bidhaa ya kwanza"
+# print(Call(speech))
+# speech = "Go to home page"
+# print(Call(speech))
+# speech = "Buy the first product"
+# print(Call(speech))
+# speech = "I want to add product thirty three to cart"
+# print(Call(speech))
+# speech = "Go to cart page"
+# print(Call(speech))
+
+
+
