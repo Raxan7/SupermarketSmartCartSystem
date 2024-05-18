@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from django.contrib.messages import constants as messages
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 import dj_database_url
 # import environ
 
@@ -187,3 +190,10 @@ ANYMAIL = {
 # DEFAULT_FROM_EMAIL = 'no-reply-akacha@raxan7.com'
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# adding config
+cloudinary.config(
+  cloud_name = "dvbdol5uj",
+  api_key = "463778388412657",
+  api_secret = "-ohofO2WCM2YdwCgbGfocwCsGNs"
+)
