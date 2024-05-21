@@ -57,7 +57,7 @@ threadpoolctl==3.4.0
 tqdm==4.66.2
 typer==0.9.4
 typing_extensions==4.8.0
-urllib3==2.1.0
+urllib3
 wasabi==1.1.2
 weasel==0.3.4
 whitenoise==6.6.0
