@@ -7,7 +7,7 @@ from .models import *
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.urls import reverse
 from django.core.mail import send_mail
-from django.db.models import F, FloatField
+import ast
 import random
 import hashlib
 import time
@@ -533,8 +533,8 @@ def product(request, product_id):
         context['fname'] = request.user.first_name
         _, cart_count = get_cart_items_and_count(request.user)
         context['count'] = cart_count
-    # Render the productdetail.html template with the context data
-    return render(request, 'productdetail.html', context=context)
+    # Render the P.html template with the context data
+    return render(request, 'Productdetail.html', context=context)
 
 
 def reset(request):
@@ -884,13 +884,17 @@ def upload_audio(request):
         transcript = data.get('transcript', '')
 
         redirect_path = Call(transcript)
-        redirect_path = str(redirect_path)
-        if "'" in redirect_path:
-            redirect_path = re.sub(r"''{2,}", "'", redirect_path)
+        print(f"Here is the value = {type(redirect_path)}")
         
-        if (isinstance(redirect_path, tuple)):
-            return JsonResponse({'redirect_url': reverse("store:" + redirect_path[0], kwargs={"product_id": redirect_path[1]})})
+        print(redirect_path[2])
+        if isinstance(redirect_path, tuple):
+            # redirect_path = ast.literal_eval(redirect_path)
+            print(redirect_path)
+            return JsonResponse({'redirect_url': reverse("store:" + redirect_path[0].strip(), kwargs={"product_id": redirect_path[1].strip()})})
         else:
+            redirect_path = str(redirect_path)
+            if "'" in redirect_path:
+                redirect_path = re.sub(r"''{2,}", "'", redirect_path)
             return JsonResponse({'redirect_url': reverse("store:" + redirect_path)})
     else:
         return JsonResponse({'error': 'Only POST requests are allowed.'})

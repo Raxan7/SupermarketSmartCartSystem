@@ -1,3 +1,4 @@
+from enum import Flag
 import markdown
 import re
 import google.generativeai as genai
@@ -35,9 +36,10 @@ def Call(speech: str):
     try:
         if result:
             product_path, number = result
-            print("Product:", product_path)
-            print("Number:", number)
-            return product_path, number
+            # print("Product:", product_path)
+            # print("Number:", number)
+            flagger = True
+            return tuple((product_path, number, flagger))
         elif (result==None):
             return value
         
