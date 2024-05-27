@@ -16,7 +16,7 @@ recordButton.addEventListener('click', () => {
 
     recognition.onresult = function(event) {
         const transcript = event.results[0][0].transcript;
-        alert(transcript);
+        // alert(transcript);
         statusText.textContent = 'Sending...';
         sendTranscript(transcript);
     };
