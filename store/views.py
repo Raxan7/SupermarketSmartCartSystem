@@ -69,7 +69,8 @@ def add_to_cart(request, product_id):
             cart_item.save()
             messages.info(request, "Product added to cart successfully.")
         # Return a JsonResponse indicating success
-        return JsonResponse({"status": "success"})
+        # return JsonResponse({"status": "success"})
+        return redirect(reverse("store:Cart"))
     else:
         # Inform the user that they need to log in and redirect to the 'Sign In' page
         messages.info(request, "You need to login first.")
