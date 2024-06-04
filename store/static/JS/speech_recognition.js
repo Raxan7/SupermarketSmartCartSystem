@@ -8,7 +8,7 @@ recordButton.addEventListener('click', () => {
     recordButton.disabled = true;
     stopButton.disabled = false; // Enable stop button when recording starts
     // statusText.textContent = 'Recording...';
-    confirm("Confirm to start recording")
+    // confirm("Confirm to start recording")
 
     recognition = new webkitSpeechRecognition();
     recognition.lang = 'en-US';
