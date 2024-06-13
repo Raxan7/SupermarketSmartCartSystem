@@ -26,7 +26,6 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = CloudinaryField("image")
-    # image = models.ImageField(upload_to='products/')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     stock_count = models.IntegerField()
 
