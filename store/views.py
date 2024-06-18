@@ -101,11 +101,11 @@ def remove_from_cart(request, product_id):
         # If the CartItem is not found, send an error message
         else:
             messages.error(request, "Product not found in cart.")
-            return JsonResponse({"status": "error"})
+            return reverse("store:Cart")
     # If the user is not authenticated, send an error message
     else:
         messages.info(request, "You need to login first.")
-        return JsonResponse({"status": "error"})
+        return reverse("store:Cart")
 
 
 def verify_otp(request):
