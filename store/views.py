@@ -97,7 +97,7 @@ def remove_from_cart(request, product_id):
             cart_item.delete()
             messages.info(request, "Product removed from cart successfully.")
             # return JsonResponse({"status": "success"})
-            return reverse("store:remove_from_cart", product_id)
+            return reverse("store:Cart")
         # If the CartItem is not found, send an error message
         else:
             messages.error(request, "Product not found in cart.")

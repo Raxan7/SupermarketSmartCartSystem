@@ -156,6 +156,7 @@
     <main class="main">
       <div class="allproducts">
         <div class="productshead">
+          <span>PRODUCT ID</span>
           <span>PRODUCT NAME</span>
           <span>PRICE</span>
           <span>QUANTITY</span>
@@ -164,6 +165,7 @@
         </div>
         {% if citems %} {% for item in citems %}
         <div class="productitem">
+          <span class="productname">{{ item.product.id }}</span>
           <span class="productname">{{ item.product.name }}</span>
           <span class="productprice">{{ item.product.price }}</span>
           <div class="incdec" style="margin-top:0;" data-product-id="{{ item.product.id }}">
