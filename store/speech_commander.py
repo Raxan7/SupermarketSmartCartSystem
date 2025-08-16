@@ -6,7 +6,7 @@ import google.generativeai as genai
 
 GOOGLE_API_KEY = 'AIzaSyCUtsWnHXMz9zKzys4-MdItdetPKQLSG5E'
 genai.configure(api_key=GOOGLE_API_KEY)
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('models/gemini-pro')
 
 url_paths = ["home", "Cart", "Shop", "Checkout", "Profile", "Payment", "Sign In", "Sign Up", "Forgot Password", 
             "Reset Password", "SignOut", "check_user_exists", "update_profile", "search", "verify_otp", 
